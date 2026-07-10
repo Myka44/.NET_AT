@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Task_LocatorsForWebElements_1/ConsoleApp1
+/Task_LocatorsForWebElements_1/ConsoleApp2
+/Task_LocatorsForWebElements_1/packages
