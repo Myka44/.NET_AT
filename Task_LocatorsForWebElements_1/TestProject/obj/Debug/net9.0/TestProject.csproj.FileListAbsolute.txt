@@ -116,3 +116,7 @@ C:\Users\Mykolas\Source\Repos\.NET_AT\Task_LocatorsForWebElements_1\TestProject\
 C:\Users\Mykolas\Source\Repos\.NET_AT\Task_LocatorsForWebElements_1\TestProject\bin\Debug\net9.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 C:\Users\Mykolas\Source\Repos\.NET_AT\Task_LocatorsForWebElements_1\TestProject\bin\Debug\net9.0\runtimes\win\lib\net9.0\System.Text.Encodings.Web.dll
 C:\Users\Mykolas\Source\Repos\.NET_AT\Task_LocatorsForWebElements_1\TestProject\bin\Debug\net9.0\appsettings.json
+C:\Users\Mykolas\Source\Repos\.NET_AT\Task_LocatorsForWebElements_1\TestProject\bin\Debug\net9.0\.msCoverageSourceRootsMapping_TestProject
+C:\Users\Mykolas\Source\Repos\.NET_AT\Task_LocatorsForWebElements_1\TestProject\bin\Debug\net9.0\CoverletSourceRootsMapping_TestProject
+C:\Users\Mykolas\Source\Repos\.NET_AT\Task_LocatorsForWebElements_1\TestProject\bin\Debug\net9.0\Main.dll
+C:\Users\Mykolas\Source\Repos\.NET_AT\Task_LocatorsForWebElements_1\TestProject\bin\Debug\net9.0\Main.pdb

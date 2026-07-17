@@ -460,10 +460,10 @@
           }
         }
       },
-      "Selenium.Support/4.45.0": {
+      "Selenium.Support/4.46.0": {
         "type": "package",
         "dependencies": {
-          "Selenium.WebDriver": "4.45.0"
+          "Selenium.WebDriver": "4.46.0"
         },
         "compile": {
           "lib/netstandard2.0/Selenium.Support.dll": {
@@ -476,7 +476,7 @@
           }
         }
       },
-      "Selenium.WebDriver/4.45.0": {
+      "Selenium.WebDriver/4.46.0": {
         "type": "package",
         "compile": {
           "lib/net8.0/Selenium.WebDriver.dll": {
@@ -504,6 +504,12 @@
             "assetType": "native",
             "rid": "win"
           }
+        }
+      },
+      "Selenium.WebDriver.ChromeDriver/150.0.7871.12400": {
+        "type": "package",
+        "build": {
+          "build/_._": {}
         }
       },
       "System.IO.Pipelines/10.0.9": {
@@ -675,6 +681,20 @@
         },
         "build": {
           "build/net6.0/xunit.runner.visualstudio.props": {}
+        }
+      },
+      "Main/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "Selenium.WebDriver": "4.46.0",
+          "Selenium.WebDriver.ChromeDriver": "150.0.7871.12400"
+        },
+        "compile": {
+          "bin/placeholder/Main.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Main.dll": {}
         }
       }
     }
@@ -1267,24 +1287,24 @@
         "packageIcon.png"
       ]
     },
-    "Selenium.Support/4.45.0": {
-      "sha512": "RCrKFTgI2wV451bcE23cjI4YUzaAGtIsUXbtSXd3gSjDtM/43gz6YEGctyLZM9LLSoM0XlnWXgRDHIbXzDL3SQ==",
+    "Selenium.Support/4.46.0": {
+      "sha512": "jnYu0iMTD0S8pZU4e2L/0y6AImO+vW9ckXbNm5rXKSoOAEIy1NsQ4rC9xy5HAf0HMGF2RxZ43J/FCVXeLikvEw==",
       "type": "package",
-      "path": "selenium.support/4.45.0",
+      "path": "selenium.support/4.46.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "icon.png",
         "lib/netstandard2.0/Selenium.Support.dll",
         "lib/netstandard2.0/Selenium.Support.xml",
-        "selenium.support.4.45.0.nupkg.sha512",
+        "selenium.support.4.46.0.nupkg.sha512",
         "selenium.support.nuspec"
       ]
     },
-    "Selenium.WebDriver/4.45.0": {
-      "sha512": "DhPMLb8nI7J7AWIPG43yN5PvkUtTCZymXUuBKFBhPYP+aycRs7rFxkeu0tlZ9HO2D1Im5Vp46r/yOxz9iXFeHA==",
+    "Selenium.WebDriver/4.46.0": {
+      "sha512": "7bXGxmHD9mZEYflnUDVdE5IV/O9tat0DgFBnPYSrDv+W+0HrpFR8qMON4tTFNMe1fJHPS5HUIQLQdTKX8744bw==",
       "type": "package",
-      "path": "selenium.webdriver/4.45.0",
+      "path": "selenium.webdriver/4.46.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1301,8 +1321,32 @@
         "runtimes/linux/native/selenium-manager",
         "runtimes/osx/native/selenium-manager",
         "runtimes/win/native/selenium-manager.exe",
-        "selenium.webdriver.4.45.0.nupkg.sha512",
+        "selenium.webdriver.4.46.0.nupkg.sha512",
         "selenium.webdriver.nuspec"
+      ]
+    },
+    "Selenium.WebDriver.ChromeDriver/150.0.7871.12400": {
+      "sha512": "oW4Z8Mczyf9VLkSq0zXvtWl9tymVqvounGhQTCLlF3BYGEfHTHw6BIeJSkAiqGjMY02pPfO/uQUQU9nVHxju5A==",
+      "type": "package",
+      "path": "selenium.webdriver.chromedriver/150.0.7871.12400",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "README.md",
+        "build/DefinePropertiesChromeDriver.targets",
+        "build/Selenium.WebDriver.ChromeDriver.targets",
+        "driver/linux64/LICENSE.chromedriver",
+        "driver/linux64/chromedriver",
+        "driver/mac64/LICENSE.chromedriver",
+        "driver/mac64/chromedriver",
+        "driver/mac64arm/LICENSE.chromedriver",
+        "driver/mac64arm/chromedriver",
+        "driver/win32/LICENSE.chromedriver",
+        "driver/win32/chromedriver.exe",
+        "nupkg-icon.png",
+        "selenium.webdriver.chromedriver.150.0.7871.12400.nupkg.sha512",
+        "selenium.webdriver.chromedriver.nuspec"
       ]
     },
     "System.IO.Pipelines/10.0.9": {
@@ -1607,15 +1651,21 @@
         "xunit.runner.visualstudio.2.8.2.nupkg.sha512",
         "xunit.runner.visualstudio.nuspec"
       ]
+    },
+    "Main/1.0.0": {
+      "type": "project",
+      "path": "../Main/Main.csproj",
+      "msbuildProject": "../Main/Main.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net9.0": [
+      "Main >= 1.0.0",
       "Microsoft.Extensions.Configuration >= 10.0.9",
       "Microsoft.Extensions.Configuration.Json >= 10.0.9",
       "Microsoft.NET.Test.Sdk >= 17.12.0",
-      "Selenium.Support >= 4.45.0",
-      "Selenium.WebDriver >= 4.45.0",
+      "Selenium.Support >= 4.46.0",
+      "Selenium.WebDriver >= 4.46.0",
       "coverlet.collector >= 6.0.2",
       "xunit >= 2.9.2",
       "xunit.runner.visualstudio >= 2.8.2"
@@ -1628,11 +1678,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Mykolas\\source\\repos\\.NET_AT\\Task_LocatorsForWebElements_1\\TestProject\\TestProject.csproj",
+      "projectUniqueName": "C:\\Users\\Mykolas\\Source\\Repos\\.NET_AT\\Task_LocatorsForWebElements_1\\TestProject\\TestProject.csproj",
       "projectName": "TestProject",
-      "projectPath": "C:\\Users\\Mykolas\\source\\repos\\.NET_AT\\Task_LocatorsForWebElements_1\\TestProject\\TestProject.csproj",
+      "projectPath": "C:\\Users\\Mykolas\\Source\\Repos\\.NET_AT\\Task_LocatorsForWebElements_1\\TestProject\\TestProject.csproj",
       "packagesPath": "C:\\Users\\Mykolas\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Mykolas\\source\\repos\\.NET_AT\\Task_LocatorsForWebElements_1\\TestProject\\obj\\",
+      "outputPath": "C:\\Users\\Mykolas\\Source\\Repos\\.NET_AT\\Task_LocatorsForWebElements_1\\TestProject\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1652,7 +1702,11 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Mykolas\\Source\\Repos\\.NET_AT\\Task_LocatorsForWebElements_1\\Main\\Main.csproj": {
+              "projectPath": "C:\\Users\\Mykolas\\Source\\Repos\\.NET_AT\\Task_LocatorsForWebElements_1\\Main\\Main.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -1685,11 +1739,11 @@
           },
           "Selenium.Support": {
             "target": "Package",
-            "version": "[4.45.0, )"
+            "version": "[4.46.0, )"
           },
           "Selenium.WebDriver": {
             "target": "Package",
-            "version": "[4.45.0, )"
+            "version": "[4.46.0, )"
           },
           "coverlet.collector": {
             "target": "Package",

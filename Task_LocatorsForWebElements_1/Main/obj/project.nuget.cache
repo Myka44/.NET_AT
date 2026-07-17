@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "8puASIs/Ei8=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Mykolas\\Source\\Repos\\.NET_AT\\Task_LocatorsForWebElements_1\\Main\\Main.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Mykolas\\.nuget\\packages\\selenium.webdriver\\4.46.0\\selenium.webdriver.4.46.0.nupkg.sha512",
+    "C:\\Users\\Mykolas\\.nuget\\packages\\selenium.webdriver.chromedriver\\150.0.7871.12400\\selenium.webdriver.chromedriver.150.0.7871.12400.nupkg.sha512"
+  ],
+  "logs": []
+}

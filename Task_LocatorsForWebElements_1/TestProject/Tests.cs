@@ -1,179 +1,146 @@
-﻿using OpenQA.Selenium;
+﻿using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
+using TestProject.PageObjects;
 using Xunit.Abstractions;
-using Microsoft.Extensions.Configuration;
 
 namespace TestProject
 {
     public class Tests : IDisposable
     {
         private readonly ITestOutputHelper _output;
-        private readonly IWebDriver _driver;
-        private readonly TimeSpan _timeout;
-        private readonly WebDriverWait _wait;
-        private readonly WebDriverWait _ignoreExceptionWait;
+        private readonly CustomWebDriver _driver;
+        private readonly string _downloadDirectory;
+
         private static readonly string MainPageUrl = new ConfigurationBuilder()
-         .SetBasePath(AppContext.BaseDirectory)
-         .AddJsonFile("appsettings.json")
-         .Build()["MainPageUrl"]!;
-
-        private readonly By _careersLocator = By.PartialLinkText("Careers");
-        private readonly By _searchIconLocator = By.ClassName("search-icon");
-        private readonly By _searchBarLocator = By.Id("new_form_search");
-        private readonly By _findButtonLocator = By.CssSelector(".custom-search-button");
-        private readonly By _resultItemLocator = By.ClassName("search-results__title-link");
-
-        private readonly By _startYourSearchLocator = By.CssSelector("a.button-body");
-
-        private readonly By _searchByKeywordLocator = By.Name("search");
-        private readonly By _countryDropdownLocator = By.CssSelector("[data-testid='country-dropdown'] .dropdown__control");
-        private readonly By _countryInputLocator = By.CssSelector("input.dropdown__input");
-        private readonly By _countryOptionLocator = By.CssSelector("div[class*='dropdown__option']");
-        private readonly By _countryDropDownMenu = By.ClassName("dropdown__menu");
-        private readonly By _countryDropDownValue = By.CssSelector("div[data-testid='dropdown-value']");
-        private readonly By _remoteFilterCheckboxLocator = By.CssSelector("label[for*='checkbox-vacancy_type-Remote']");
-        private readonly By _searchButtonLocator = By.XPath("//button[@name='submit_search_box_button']");
-        private readonly By _expandItemButtonLocator = By.CssSelector("span[data-testid='accordion-section-header-icon-container']");
-        private readonly By _jobDescriptionLocator = By.CssSelector("div[data-testid='categories-container']");
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build()["MainPageUrl"]!;
 
         public Tests(ITestOutputHelper output)
         {
             _output = output;
-            _timeout = TimeSpan.FromSeconds(15);
-            _driver = new ChromeDriver();
-            _driver.Manage().Timeouts().ImplicitWait = _timeout;
-            _driver.Manage().Window.Maximize();
-            _wait = new WebDriverWait(_driver, _timeout);
-            _ignoreExceptionWait = new WebDriverWait(_driver, _timeout);
-            _ignoreExceptionWait.IgnoreExceptionTypes(typeof(StaleElementReferenceException), typeof(ElementClickInterceptedException));
+
+            _downloadDirectory = Path.Combine(Path.GetTempPath(), "test_downloads" + Guid.NewGuid());
+            Directory.CreateDirectory(_downloadDirectory);
+
+            var options = new ChromeOptions();
+            //chrome://prefs-internals/
+            options.AddUserProfilePreference("download.default_directory", _downloadDirectory);
+            options.AddUserProfilePreference("download.prompt_for_download", false);
+            options.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
+
+            var chromeDriver = new ChromeDriver(options);
+            chromeDriver.Manage().Window.Maximize();
+
+            _driver = new CustomWebDriver(chromeDriver, TimeSpan.FromSeconds(15));
         }
 
         public void Dispose()
         {
             _driver.Quit();
-            _driver.Dispose();
+
+            if (Directory.Exists(_downloadDirectory))
+            {
+                Directory.Delete(_downloadDirectory, true);
+            }
         }
 
         [Theory]
         [InlineData(".NET", "Republic of Lithuania")]
         [InlineData("Java", "Poland")]
-        public void PositionSearchResultDescriptionContainsSearchKeyword(string searchKeyword, string searchCountry)
+        public void Task1_PositionSearchResultDescriptionContainsSearchKeyword(string searchKeyword, string searchCountry)
         {
-            _driver.Navigate().GoToUrl(MainPageUrl);
+            var mainPage = new MainPage(_driver, MainPageUrl);
+            mainPage.Open();
 
-            _wait.Until(drv =>
-            {
-                IWebElement element = drv.FindElement(_careersLocator);
-                return (element.Displayed && element.Enabled) ? element : null;
-            }).Click();
+            var jobPage = mainPage.GoToCareers().StartYourSearch();
 
-            _wait.Until(drv =>
-            {
-                IWebElement element = drv.FindElement(_startYourSearchLocator);
-                return (element.Displayed && element.Enabled) ? element : null;
-            }).Click();
+            string descriptionText = jobPage
+                .EnterSearchKeyword(searchKeyword)
+                .SubmitSearch()
+                .SelectCountry(searchCountry)
+                .ToggleRemoteFilter()
+                .ExpandFirstResult()
+                .GetJobDescriptionText();
 
-            IWebElement searchByKeywordField = _wait.Until(drv => drv.FindElement(_searchByKeywordLocator));
-            searchByKeywordField.Clear();
-            searchByKeywordField.SendKeys(searchKeyword);
+            _output.WriteLine($"description text: {descriptionText}");
 
-            _wait.Until(drv =>
-            {
-                IWebElement element = drv.FindElement(_searchButtonLocator);
-                return (element.Displayed && element.Enabled) ? element : null;
-            }).Click();
-
-            IWebElement countryDropdown = _wait.Until(drv =>
-            {
-                IWebElement element = drv.FindElement(_countryDropdownLocator);
-                return element != null && element.Displayed && element.Enabled ? element : null;
-            });
-
-            //Have to scroll first before interacting
-            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", countryDropdown);
-
-            //if not using Thead.Sleep I get InterceptedClickException, if using conditional wait, after clicking the dropdown closes immediately
-            Thread.Sleep(500);
-            countryDropdown.Click();
-
-            _wait.Until(drv => drv.FindElement(_countryDropDownMenu));
-
-            IWebElement countryInput = _wait.Until(drv =>
-            {
-                IWebElement element = drv.FindElement(_countryInputLocator);
-                return element.Displayed ? element : null;
-            });
-            countryInput.SendKeys(searchCountry);
-
-            //if not using _ignoreExceptionWait, sometimes I get a StaleElementReferenceException here
-            _ignoreExceptionWait.Until(drv => drv.FindElements(_countryOptionLocator).FirstOrDefault(o => o.Text.Equals(searchCountry))).Click();
-
-            _wait.Until(drv =>
-            {
-                IWebElement element = drv.FindElement(_countryDropDownValue);
-                return element.Text.Equals(searchCountry) && element.Displayed && element.Enabled;
-            });
-
-            IWebElement remoteFilterCheckbox = _wait.Until(drv =>
-            {
-                IWebElement element = drv.FindElement(_remoteFilterCheckboxLocator);
-                return element.Enabled ? element : null;
-            });
-
-            remoteFilterCheckbox.Click();
-
-            _wait.Until(drv => drv.FindElements(_expandItemButtonLocator).Count > 0);
-
-            //https://stackoverflow.com/questions/12967541/how-to-avoid-staleelementreferenceexception-in-selenium
-            _ignoreExceptionWait.Until(drv =>
-            {
-                IWebElement element = drv.FindElement(_expandItemButtonLocator);
-                if (element.Displayed && element.Enabled)
-                {
-                    element.Click();
-                    return true;
-                }
-                return false;
-            });
-
-            string descriptionText = _wait.Until(drv =>
-            {
-                IWebElement element = drv.FindElement(_jobDescriptionLocator);
-                return element.Displayed && element.Enabled ? element.Text : null;
-            });
-
-            _output.WriteLine($"Description text: {descriptionText}");
             Assert.True(
                 descriptionText.Contains(searchKeyword, StringComparison.OrdinalIgnoreCase),
                 $"Expected description to contain '{searchKeyword}' but it did not.");
-            
         }
 
         [Theory]
         [InlineData("BLOCKCHAIN")]
         [InlineData("Cloud")]
         [InlineData("Automation")]
-        public void GlobalSearchWithValidInputResultsContainSearchKeyword(string searchKeyword)
+        public void Task2_GlobalSearchWithValidInputResultsContainSearchKeyword(string searchKeyword)
         {
-            _driver.Navigate().GoToUrl(MainPageUrl);
+            var mainPage = new MainPage(_driver, MainPageUrl);
+            mainPage.Open();
 
-            IWebElement searchIcon = _wait.Until(drv => drv.FindElement(_searchIconLocator));
-            searchIcon.Click();
+            List<string> resultTitles = mainPage
+                .OpenGlobalSearch()
+                .EnterGlobalSearchKeyword(searchKeyword)
+                .SubmitGlobalSearch()
+                .GetGlobalSearchResultTitles();
 
-            IWebElement searchBar = _wait.Until(drv => drv.FindElement(_searchBarLocator));
-            searchBar.SendKeys(searchKeyword);
+            resultTitles.ForEach(title => _output.WriteLine(title));
 
-            IWebElement findButton = _wait.Until(drv => drv.FindElement(_findButtonLocator));
-            findButton.Click();
+            Assert.True(resultTitles.All(title => title.Contains(searchKeyword, StringComparison.OrdinalIgnoreCase)));
+        }
 
-            IList<IWebElement> resultTitleLinks = _wait.Until(drv => drv.FindElements(_resultItemLocator));
+        [Theory]
+        [InlineData("Code-Of-Conduct_01_26.pdf")]
+        public void Task3_CodeOfEthicalConductPdfDownloadsSuccessfully(string expectedFileName)
+        {
+            var mainPage = new MainPage(_driver, MainPageUrl);
+            mainPage.Open();
+            mainPage.ClickCodeOfEthicalConductPdfLink();
 
-            List<string> resultTitleTexts = resultTitleLinks.Select(x => x.Text).ToList();
+            string expectedFilePath = Path.Combine(_downloadDirectory, expectedFileName);
+            bool downloaded = WaitForFileToBeDownloaded(expectedFilePath, TimeSpan.FromSeconds(30));
 
-            resultTitleTexts.ForEach(x => _output.WriteLine(x));
+            Assert.True(downloaded, $"expected file '{expectedFileName}' was not found in '{_downloadDirectory}'.");
+        }
 
-            Assert.True(resultTitleTexts.All(x => x.Contains(searchKeyword, StringComparison.OrdinalIgnoreCase)));
+        [Theory]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void Task4_ArticleTitleMatchesCarouselTitle(int swipeCount)
+        {
+            var mainPage = new MainPage(_driver, MainPageUrl);
+            mainPage.Open();
+
+            var insightsPage = mainPage.GoToInsights();
+            insightsPage.SwipeCarousel(swipeCount);
+
+            string carouselArticleTitle = insightsPage.GetCurrentArticleTitle();
+            _output.WriteLine($"carousel article title: {carouselArticleTitle}");
+
+            var articlePage = insightsPage.ClickReadMore();
+            string articlePageTitle = articlePage.GetArticleTitle();
+            _output.WriteLine($"article page title: {articlePageTitle}");
+
+            Assert.Equal(NormalizeWhitespace(carouselArticleTitle), NormalizeWhitespace(articlePageTitle), ignoreCase: true);
+        }
+
+        private static string NormalizeWhitespace(string text) =>
+            string.Join(' ', text.Replace('\u00A0', ' ').Split(' ', StringSplitOptions.RemoveEmptyEntries)).Trim();
+
+        private static bool WaitForFileToBeDownloaded(string filePath, TimeSpan timeout)
+        {
+            DateTime deadline = DateTime.UtcNow.Add(timeout);
+            while (DateTime.UtcNow < deadline)
+            {
+                if (File.Exists(filePath))
+                {
+                    return true;
+                }
+
+                Thread.Sleep(500);
+            }
+            return false;
         }
     }
 }
