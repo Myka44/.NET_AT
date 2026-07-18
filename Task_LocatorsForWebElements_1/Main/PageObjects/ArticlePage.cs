@@ -6,8 +6,10 @@ namespace TestProject.PageObjects
     {
         private readonly By _articleTitleLocator = By.TagName("h1");
 
-        public ArticlePage(CustomWebDriver driver) : base(driver) { }
+        public ArticlePage(CustomWebDriver driver) : base(driver) {
 
-        public string GetArticleTitle() => Driver.GetText(_articleTitleLocator);
+        }
+
+        public string GetArticleTitle() => CustomDriver.GetText(_articleTitleLocator);
     }
 }

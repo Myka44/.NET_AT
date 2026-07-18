@@ -4,7 +4,6 @@ using OpenQA.Selenium.Support.UI;
 
 namespace TestProject.PageObjects
 {
-    //wrapper utility class for IWebDriver
     public class CustomWebDriver
     {
         public IWebDriver Driver { get; }
@@ -106,13 +105,15 @@ namespace TestProject.PageObjects
         public string GetText(By locator) => WaitUntilVisible(locator).Text;
 
         public void ScrollIntoView(IWebElement element) =>
-            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView(true);", element); //arguments[0].scrollIntoView({block:'center'});
-
-        //((IJavaScriptExecutor) _driver).ExecuteScript("arguments[0].scrollIntoView(true);", countryDropdown);
+            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView(true);", element);
 
         public void ScrollIntoView(By locator) => ScrollIntoView(WaitUntilVisible(locator));
-        public void ScrollByWheel(int deltaX, int deltaY) =>
-             new Actions(Driver).ScrollByAmount(deltaX, deltaY).Perform();
+
+
+        public void ScrollIntoViewCenter(IWebElement element) =>
+            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView({block:'center'});", element);
+
+        public void ScrollIntoViewCenter(By locator) => ScrollIntoViewCenter(WaitUntilVisible(locator));
 
         public void WaitUntil(Func<IWebDriver, bool> condition) => _wait.Until(condition);
 

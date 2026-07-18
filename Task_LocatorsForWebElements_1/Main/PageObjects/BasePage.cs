@@ -2,11 +2,11 @@
 {
     public abstract class BasePage
     {
-        protected readonly CustomWebDriver Driver;
+        protected readonly CustomWebDriver CustomDriver;
 
         protected BasePage(CustomWebDriver driver)
         {
-            Driver = driver;
+            CustomDriver = driver;
         }
     }
 }

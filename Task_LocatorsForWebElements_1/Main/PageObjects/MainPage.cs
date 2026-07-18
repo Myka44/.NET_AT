@@ -21,50 +21,50 @@ namespace TestProject.PageObjects
 
         public MainPage Open()
         {
-            Driver.NavigateTo(_url);
+            CustomDriver.NavigateTo(_url);
             return this;
         }
 
         public CareersPage GoToCareers()
         {
-            Driver.ClickWhenReady(_careersLocator);
-            return new CareersPage(Driver);
+            CustomDriver.ClickWhenReady(_careersLocator);
+            return new CareersPage(CustomDriver);
         }
 
         public MainPage OpenGlobalSearch()
         {
-            Driver.ClickWhenReady(_searchIconLocator);
+            CustomDriver.ClickWhenReady(_searchIconLocator);
             return this;
         }
 
         public MainPage EnterGlobalSearchKeyword(string keyword)
         {
-            Driver.TypeText(_searchBarLocator, keyword);
+            CustomDriver.TypeText(_searchBarLocator, keyword);
             return this;
         }
 
         public MainPage SubmitGlobalSearch()
         {
-            Driver.ClickWhenReady(_findButtonLocator);
+            CustomDriver.ClickWhenReady(_findButtonLocator);
             return this;
         }
 
         public List<string> GetGlobalSearchResultTitles() =>
-            Driver.WaitUntilAnyPresent(_searchResultItemLocator).Select(e => e.Text).ToList();
+            CustomDriver.WaitUntilAnyPresent(_searchResultItemLocator).Select(e => e.Text).ToList();
 
 
         public MainPage ClickCodeOfEthicalConductPdfLink()
         {
-            Driver.WaitUntil(d => d.FindElement(_policyPdfLinkLocator));
-            Driver.ScrollIntoView(_policyPdfLinkLocator);
-            Driver.ClickWhenReady(_policyPdfLinkLocator);
+            CustomDriver.WaitUntil(d => d.FindElement(_policyPdfLinkLocator));
+            CustomDriver.ScrollIntoViewCenter(_policyPdfLinkLocator);
+            CustomDriver.ClickWhenReady(_policyPdfLinkLocator);
             return this;
         }
 
         public InsightsPage GoToInsights()
         {
-            Driver.ClickWhenReady(_insightsMenuLocator);
-            return new InsightsPage(Driver);
+            CustomDriver.ClickWhenReady(_insightsMenuLocator);
+            return new InsightsPage(CustomDriver);
         }
     }
 }

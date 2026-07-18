@@ -24,10 +24,10 @@ namespace TestProject
             Directory.CreateDirectory(_downloadDirectory);
 
             var options = new ChromeOptions();
-            //chrome://prefs-internals/
+
             options.AddUserProfilePreference("download.default_directory", _downloadDirectory);
             options.AddUserProfilePreference("download.prompt_for_download", false);
-            options.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
+            //options.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
 
             var chromeDriver = new ChromeDriver(options);
             chromeDriver.Manage().Window.Maximize();
@@ -122,11 +122,8 @@ namespace TestProject
             string articlePageTitle = articlePage.GetArticleTitle();
             _output.WriteLine($"article page title: {articlePageTitle}");
 
-            Assert.Equal(NormalizeWhitespace(carouselArticleTitle), NormalizeWhitespace(articlePageTitle), ignoreCase: true);
+            Assert.Equal(carouselArticleTitle, articlePageTitle, ignoreCase: true);
         }
-
-        private static string NormalizeWhitespace(string text) =>
-            string.Join(' ', text.Replace('\u00A0', ' ').Split(' ', StringSplitOptions.RemoveEmptyEntries)).Trim();
 
         private static bool WaitForFileToBeDownloaded(string filePath, TimeSpan timeout)
         {
