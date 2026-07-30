@@ -66,7 +66,7 @@ namespace TestProject
 
             Assert.True(
                 descriptionText.Contains(searchKeyword, StringComparison.OrdinalIgnoreCase),
-                $"Expected description to contain '{searchKeyword}' but it did not.");
+                $"expected description did not contain '{searchKeyword}'");
         }
 
         [Theory]
@@ -86,7 +86,7 @@ namespace TestProject
 
             resultTitles.ForEach(title => _output.WriteLine(title));
 
-            Assert.True(resultTitles.Count > 0, $"Expected at least one search result for '{searchKeyword}' but found none.");
+            Assert.True(resultTitles.Count > 0, $"expected at least one search result for '{searchKeyword}'");
             Assert.True(resultTitles.All(title => title.Contains(searchKeyword, StringComparison.OrdinalIgnoreCase)));
         }
 
