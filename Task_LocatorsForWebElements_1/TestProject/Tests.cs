@@ -87,7 +87,7 @@ namespace TestProject
             resultTitles.ForEach(title => _output.WriteLine(title));
 
             Assert.True(resultTitles.Count > 0, $"expected at least one search result for '{searchKeyword}'");
-            Assert.True(resultTitles.All(title => title.Contains(searchKeyword, StringComparison.OrdinalIgnoreCase)));
+            Assert.True(resultTitles.All(title => title.Contains(searchKeyword, StringComparison.OrdinalIgnoreCase)), $"all search results did not contain '{searchKeyword}'");
         }
 
         [Theory]
