@@ -27,7 +27,6 @@ namespace TestProject
 
             options.AddUserProfilePreference("download.default_directory", _downloadDirectory);
             options.AddUserProfilePreference("download.prompt_for_download", false);
-            //options.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
 
             var chromeDriver = new ChromeDriver(options);
             chromeDriver.Manage().Window.Maximize();
@@ -46,7 +45,7 @@ namespace TestProject
         }
 
         [Theory]
-        [InlineData(".NET", "Republic of Lithuania")]
+        [InlineData("JavaScript", "Republic of Lithuania")]
         [InlineData("Java", "Poland")]
         public void Task1_PositionSearchResultDescriptionContainsSearchKeyword(string searchKeyword, string searchCountry)
         {
@@ -60,7 +59,7 @@ namespace TestProject
                 .SubmitSearch()
                 .SelectCountry(searchCountry)
                 .ToggleRemoteFilter()
-                .ExpandFirstResult()
+                .ExpandLastResult()
                 .GetJobDescriptionText();
 
             _output.WriteLine($"description text: {descriptionText}");
@@ -87,6 +86,7 @@ namespace TestProject
 
             resultTitles.ForEach(title => _output.WriteLine(title));
 
+            Assert.True(resultTitles.Count > 0, $"Expected at least one search result for '{searchKeyword}' but found none.");
             Assert.True(resultTitles.All(title => title.Contains(searchKeyword, StringComparison.OrdinalIgnoreCase)));
         }
 

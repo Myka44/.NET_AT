@@ -11,6 +11,7 @@ namespace TestProject.PageObjects
         public JobPage StartYourSearch()
         {
             CustomDriver.ClickWhenReady(_startYourSearchLocator);
+            CustomDriver.AcceptCookiesIfPresent();
             return new JobPage(CustomDriver);
         }
     }

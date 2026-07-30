@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace TestProject.PageObjects
 {
@@ -49,8 +50,17 @@ namespace TestProject.PageObjects
             return this;
         }
 
-        public List<string> GetGlobalSearchResultTitles() =>
-            CustomDriver.WaitUntilAnyPresent(_searchResultItemLocator).Select(e => e.Text).ToList();
+        public List<string> GetGlobalSearchResultTitles()
+        {
+            try
+            {
+                return CustomDriver.WaitUntilAnyPresent(_searchResultItemLocator).Select(e => e.Text).ToList();
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return new List<string>();
+            }
+        }
 
 
         public MainPage ClickCodeOfEthicalConductPdfLink()

@@ -11,6 +11,8 @@ namespace TestProject.PageObjects
         private readonly WebDriverWait _wait;
         private readonly WebDriverWait _ignoreStaleWait;
 
+        private readonly By _cookieAcceptButtonLocator = By.Id("onetrust-accept-btn-handler");
+
         public CustomWebDriver(IWebDriver driver, TimeSpan timeout)
         {
             Driver = driver;
@@ -27,6 +29,12 @@ namespace TestProject.PageObjects
 
         public void NavigateTo(string url) => Driver.Navigate().GoToUrl(url);
 
+        public void AcceptCookiesIfPresent()
+        {
+
+            ClickSafe(_cookieAcceptButtonLocator);
+        }
+
         public void WriteSafe(By locator, string text)
         {
             WaitAction(locator, _ignoreStaleWait, x => x.SendKeys(text));
@@ -40,6 +48,11 @@ namespace TestProject.PageObjects
         public void ClickSafeFromMultiple(By locator, Func<IWebElement, bool> elementFilter)
         {
             WaitActionMultiple(locator, _ignoreStaleWait, x => x.Click(), elementFilter);
+        }
+
+        public void ClickSafeLast(By locator)
+        {
+            WaitActionLast(locator, _ignoreStaleWait, x => x.Click());
         }
 
         private void WaitAction(By locator, WebDriverWait wait, Action<IWebElement> action)
@@ -72,12 +85,34 @@ namespace TestProject.PageObjects
             });
         }
 
+        private void WaitActionLast(By locator, WebDriverWait wait, Action<IWebElement> action)
+        {
+            wait.Until(d =>
+            {
+                IWebElement element = d.FindElements(locator).LastOrDefault();
+
+                if (element != null && element.Displayed && element.Enabled)
+                {
+                    action(element);
+                    return true;
+                }
+                return false;
+            });
+        }
+
         public IWebElement WaitUntilVisible(By locator) =>
             _wait.Until(d =>
             {
                 var element = d.FindElement(locator);
                 return element.Displayed ? element : null;
             });
+
+        public IWebElement WaitUntilVisibleLast(By locator) =>
+        _wait.Until(d =>
+        {
+            var element = d.FindElements(locator).LastOrDefault();
+            return element != null && element.Displayed ? element : null;
+        });
 
 
         public IWebElement WaitUntilClickable(By locator) =>
@@ -118,8 +153,6 @@ namespace TestProject.PageObjects
         public void WaitUntil(Func<IWebDriver, bool> condition) => _wait.Until(condition);
 
         public T WaitUntil<T>(Func<IWebDriver, T> condition) => _wait.Until(condition);
-
-        public T WaitIgnoringStaleness<T>(Func<IWebDriver, T> condition) => _ignoreStaleWait.Until(condition);
 
         public void Quit() => Driver.Quit();
     }

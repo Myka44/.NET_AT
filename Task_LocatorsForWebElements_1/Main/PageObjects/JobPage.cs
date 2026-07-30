@@ -6,7 +6,7 @@ namespace TestProject.PageObjects
     public class JobPage : BasePage
     {
         private readonly By _searchByKeywordLocator = By.TagName("input");
-        private readonly By _countryDropdownLocator = By.XPath("//div[@data-testid='country-dropdown']/descendant::div[contains(@class, 'dropdown__control')]"); 
+        private readonly By _countryDropdownLocator = By.XPath("//div[@data-testid='country-dropdown']/descendant::div[contains(@class, 'dropdown__control')]");
         private readonly By _countryInputLocator = By.XPath("//div[@data-testid='country-dropdown']//input[contains(@class, 'dropdown__input')]");
         private readonly By _countryOptionLocator = By.XPath("//div[@data-testid='country-dropdown']//div[contains(@class, 'dropdown__option')]");
         private readonly By _countryDropDownValueLocator = By.CssSelector("div[data-testid='dropdown-value']");
@@ -31,8 +31,7 @@ namespace TestProject.PageObjects
 
         public JobPage SelectCountry(string country)
         {
-            var dropdown = CustomDriver.WaitUntilClickable(_countryDropdownLocator);
-            CustomDriver.ScrollIntoView(dropdown);
+            CustomDriver.ScrollIntoView(_countryDropdownLocator);
             CustomDriver.ClickSafe(_countryDropdownLocator);
             CustomDriver.TypeText(_countryInputLocator, country);
             CustomDriver.ClickSafeFromMultiple(_countryOptionLocator, o => o.Text.Equals(country));
@@ -51,12 +50,15 @@ namespace TestProject.PageObjects
             return this;
         }
 
-        public JobPage ExpandFirstResult()
+        public JobPage ExpandLastResult()
         {
-            CustomDriver.ClickSafe(_expandItemButtonLocator);
+            CustomDriver.ClickSafeLast(_expandItemButtonLocator);
             return this;
         }
 
-        public string GetJobDescriptionText() => CustomDriver.GetText(_jobDescriptionLocator);
+        public string GetJobDescriptionText()
+        {
+            return CustomDriver.WaitUntilVisibleLast(_jobDescriptionLocator).Text;
+        }
     }
 }
