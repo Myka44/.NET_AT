@@ -12,6 +12,7 @@ namespace TestProject.PageObjects
         private readonly WebDriverWait _ignoreStaleWait;
 
         private readonly By _cookieAcceptButtonLocator = By.Id("onetrust-accept-btn-handler");
+        private readonly By _cookieBanner = By.Id("onetrust-banner-sdk");
 
         public CustomWebDriver(IWebDriver driver, TimeSpan timeout)
         {
@@ -29,10 +30,12 @@ namespace TestProject.PageObjects
 
         public void NavigateTo(string url) => Driver.Navigate().GoToUrl(url);
 
+        public string CurrentUrl => Driver.Url;
+
         public void AcceptCookiesIfPresent()
         {
-
             ClickSafe(_cookieAcceptButtonLocator);
+            WaitUntilHidden(_cookieBanner);
         }
 
         public void WriteSafe(By locator, string text)
@@ -107,6 +110,13 @@ namespace TestProject.PageObjects
                 return element.Displayed ? element : null;
             });
 
+        public bool WaitUntilHidden(By locator) =>
+            _wait.Until(d =>
+              {
+                    var element = d.FindElement(locator);
+                    return !element.Displayed;
+            });
+
         public IWebElement WaitUntilVisibleLast(By locator) =>
         _wait.Until(d =>
         {
@@ -131,6 +141,14 @@ namespace TestProject.PageObjects
 
         public void ClickWhenReady(By locator) => WaitUntilClickable(locator).Click();
 
+        public void ClickAndWaitUntilUrlChanges(By locator)
+        {
+            string previousUrl = Driver.Url;
+
+            ClickWhenReady(locator);
+            WaitUntilUrlChangesAndPageLoaded(previousUrl);
+        }
+
         public void TypeText(By locator, string text)
         {
             var element = WaitUntilClickable(locator);
@@ -153,6 +171,23 @@ namespace TestProject.PageObjects
         public void WaitUntil(Func<IWebDriver, bool> condition) => _wait.Until(condition);
 
         public T WaitUntil<T>(Func<IWebDriver, T> condition) => _wait.Until(condition);
+
+        public void WaitUntilUrlChangesFrom(string previousUrl)
+        {
+            _wait.Until(d => !d.Url.Equals(previousUrl, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public void WaitUntilPageLoaded()
+        {
+            _wait.Until(d =>
+                ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString().Equals("complete", StringComparison.OrdinalIgnoreCase));
+        }
+
+        public void WaitUntilUrlChangesAndPageLoaded(string previousUrl)
+        {
+            WaitUntilUrlChangesFrom(previousUrl);
+            WaitUntilPageLoaded();
+        }
 
         public Screenshot TakeScreenshot() => ((ITakesScreenshot)Driver).GetScreenshot();
 

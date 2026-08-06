@@ -25,12 +25,13 @@ namespace TestProject.PageObjects
 
         public JobPage SubmitSearch()
         {
-            CustomDriver.ClickWhenReady(_searchButtonLocator);
+            CustomDriver.ClickAndWaitUntilUrlChanges(_searchButtonLocator);
             return this;
         }
 
         public JobPage SelectCountry(string country)
         {
+            CustomDriver.WaitUntilClickable(_countryDropdownLocator);
             CustomDriver.ScrollIntoView(_countryDropdownLocator);
             CustomDriver.ClickSafe(_countryDropdownLocator);
             CustomDriver.TypeText(_countryInputLocator, country);

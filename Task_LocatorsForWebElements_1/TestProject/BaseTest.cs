@@ -58,7 +58,6 @@ namespace TestProject
             {
                 Directory.Delete(DownloadDirectory, true);
             }
-            OnEnd();
         }
 
         protected void ExecuteTest(Action testAction)
