@@ -23,6 +23,7 @@ namespace TestProject.PageObjects
         public MainPage Open()
         {
             CustomDriver.NavigateTo(_url);
+            CustomDriver.AcceptCookiesIfPresent();
             return this;
         }
 

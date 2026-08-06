@@ -154,6 +154,8 @@ namespace TestProject.PageObjects
 
         public T WaitUntil<T>(Func<IWebDriver, T> condition) => _wait.Until(condition);
 
+        public Screenshot TakeScreenshot() => ((ITakesScreenshot)Driver).GetScreenshot();
+
         public void Quit() => Driver.Quit();
     }
 }
