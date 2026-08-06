@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium;
+using OpenQA.Selenium;
 
 namespace TestProject.PageObjects
 {
@@ -10,12 +10,15 @@ namespace TestProject.PageObjects
         private readonly By _activeSlideReadMoreLocator = By.CssSelector(".owl-item.active .slider-cta-link");
         private readonly By _nextArrowLocator = By.CssSelector(".slider__right-arrow");
 
-        public InsightsPage(CustomWebDriver driver) : base(driver) {
+        public InsightsPage(CustomWebDriver driver) : base(driver)
+        {
             _activeSlideLocator = By.CssSelector(_sliderSelector);
         }
 
         public InsightsPage SwipeCarousel(int times)
         {
+            Log.Info($"Swiping carousel {times} times");
+
             ((IJavaScriptExecutor)CustomDriver.Driver).ExecuteScript(@$"
              jQuery('{_sliderSelector}').trigger('stop.owl.autoplay');
             ");
@@ -30,10 +33,15 @@ namespace TestProject.PageObjects
             return this;
         }
 
-        public string GetCurrentArticleTitle() => CustomDriver.GetText(_activeSlideTitleLocator);
+        public string GetCurrentArticleTitle()
+        {
+            Log.Info("Reading current carousel article title");
+            return CustomDriver.GetText(_activeSlideTitleLocator);
+        }
 
         public ArticlePage ClickReadMore()
         {
+            Log.Info("Opening active carousel article");
             CustomDriver.ClickWhenReady(_activeSlideReadMoreLocator);
             return new ArticlePage(CustomDriver);
         }

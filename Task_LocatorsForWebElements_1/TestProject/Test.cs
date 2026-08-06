@@ -4,6 +4,11 @@ namespace TestProject
 {
     public class Test : BaseTest
     {
+        public Test()
+        {
+            Log.Info("Starting tests");
+        }
+
         [Theory]
         [InlineData("JavaScript", "Republic of Lithuania")]
         [InlineData("Java", "Poland")]

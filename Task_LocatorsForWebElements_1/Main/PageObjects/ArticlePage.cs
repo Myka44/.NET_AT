@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium;
+using OpenQA.Selenium;
 
 namespace TestProject.PageObjects
 {
@@ -6,10 +6,12 @@ namespace TestProject.PageObjects
     {
         private readonly By _articleTitleLocator = By.TagName("h1");
 
-        public ArticlePage(CustomWebDriver driver) : base(driver) {
+        public ArticlePage(CustomWebDriver driver) : base(driver) { }
 
+        public string GetArticleTitle()
+        {
+            Log.Info("Reading article title");
+            return CustomDriver.GetText(_articleTitleLocator);
         }
-
-        public string GetArticleTitle() => CustomDriver.GetText(_articleTitleLocator);
     }
 }

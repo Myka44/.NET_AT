@@ -24,7 +24,8 @@ namespace TestProject.PageObjects
             _ignoreStaleWait = new WebDriverWait(Driver, timeout);
             _ignoreStaleWait.IgnoreExceptionTypes(
                 typeof(StaleElementReferenceException),
-                typeof(ElementClickInterceptedException)
+                typeof(ElementClickInterceptedException),
+                typeof(ElementNotInteractableException)
                 );
         }
 
@@ -34,7 +35,8 @@ namespace TestProject.PageObjects
 
         public void AcceptCookiesIfPresent()
         {
-            ClickSafe(_cookieAcceptButtonLocator);
+            WaitUntilPageLoaded();
+            ClickWithJavaScriptIfPresent(_cookieAcceptButtonLocator);
             WaitUntilHidden(_cookieBanner);
         }
 
@@ -56,6 +58,22 @@ namespace TestProject.PageObjects
         public void ClickSafeLast(By locator)
         {
             WaitActionLast(locator, _ignoreStaleWait, x => x.Click());
+        }
+
+        private void ClickWithJavaScriptIfPresent(By locator)
+        {
+            _ignoreStaleWait.Until(d =>
+            {
+                var element = d.FindElements(locator).FirstOrDefault(x => x.Displayed && x.Enabled);
+
+                if (element == null)
+                {
+                    return true;
+                }
+
+                ((IJavaScriptExecutor)d).ExecuteScript("arguments[0].click();", element);
+                return true;
+            });
         }
 
         private void WaitAction(By locator, WebDriverWait wait, Action<IWebElement> action)
@@ -113,8 +131,8 @@ namespace TestProject.PageObjects
         public bool WaitUntilHidden(By locator) =>
             _wait.Until(d =>
               {
-                    var element = d.FindElement(locator);
-                    return !element.Displayed;
+                  var elements = d.FindElements(locator);
+                  return elements.Count == 0 || elements.All(x => !x.Displayed);
             });
 
         public IWebElement WaitUntilVisibleLast(By locator) =>

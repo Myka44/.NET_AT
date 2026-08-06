@@ -53,6 +53,7 @@ namespace TestProject
 
         public void Dispose()
         {
+            Log.Info("Test dispose");
             _driver.Quit();
             if (Directory.Exists(DownloadDirectory))
             {
@@ -69,7 +70,7 @@ namespace TestProject
             catch (Exception ex)
             {
                 string screenshotPath = _screenshotMaker.TakeBrowserScreenshot();
-                Log.Error($"Test failed. Screenshot saved to: {screenshotPath}", ex);
+                Log.Error($"Test failed, screenshot saved to: {screenshotPath}", ex);
                 throw;
             }
         }

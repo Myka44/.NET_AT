@@ -1,5 +1,4 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium;
 
 namespace TestProject.PageObjects
 {
@@ -19,18 +18,21 @@ namespace TestProject.PageObjects
 
         public JobPage EnterSearchKeyword(string keyword)
         {
+            Log.Info($"Entering job search keyword: {keyword}");
             CustomDriver.TypeText(_searchByKeywordLocator, keyword);
             return this;
         }
 
         public JobPage SubmitSearch()
         {
+            Log.Info("Submitting job search");
             CustomDriver.ClickAndWaitUntilUrlChanges(_searchButtonLocator);
             return this;
         }
 
         public JobPage SelectCountry(string country)
         {
+            Log.Info($"Selecting country: {country}");
             CustomDriver.WaitUntilClickable(_countryDropdownLocator);
             CustomDriver.ScrollIntoView(_countryDropdownLocator);
             CustomDriver.ClickSafe(_countryDropdownLocator);
@@ -47,18 +49,21 @@ namespace TestProject.PageObjects
 
         public JobPage ToggleRemoteFilter()
         {
+            Log.Info("Toggling remote filter");
             CustomDriver.ClickSafe(_remoteFilterCheckboxLocator);
             return this;
         }
 
         public JobPage ExpandLastResult()
         {
+            Log.Info("Expanding last job result");
             CustomDriver.ClickSafeLast(_expandItemButtonLocator);
             return this;
         }
 
         public string GetJobDescriptionText()
         {
+            Log.Info("Reading job description text");
             return CustomDriver.WaitUntilVisibleLast(_jobDescriptionLocator).Text;
         }
     }
