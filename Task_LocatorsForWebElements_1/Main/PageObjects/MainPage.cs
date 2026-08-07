@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
 namespace TestProject.PageObjects
@@ -22,49 +22,58 @@ namespace TestProject.PageObjects
 
         public MainPage Open()
         {
+            Log.Info($"Opening main page: {_url}");
             CustomDriver.NavigateTo(_url);
+            CustomDriver.AcceptCookiesIfPresent();
             return this;
         }
 
         public CareersPage GoToCareers()
         {
+            Log.Info("Opening Careers page");
             CustomDriver.ClickWhenReady(_careersLocator);
             return new CareersPage(CustomDriver);
         }
 
         public MainPage OpenGlobalSearch()
         {
+            Log.Info("Opening global search");
             CustomDriver.ClickWhenReady(_searchIconLocator);
             return this;
         }
 
         public MainPage EnterGlobalSearchKeyword(string keyword)
         {
+            Log.Info($"Entering global search keyword: {keyword}");
             CustomDriver.TypeText(_searchBarLocator, keyword);
             return this;
         }
 
         public MainPage SubmitGlobalSearch()
         {
+            Log.Info("Submitting global search");
             CustomDriver.ClickWhenReady(_findButtonLocator);
             return this;
         }
 
         public List<string> GetGlobalSearchResultTitles()
         {
+            Log.Info("Reading global search result titles");
+
             try
             {
                 return CustomDriver.WaitUntilAnyPresent(_searchResultItemLocator).Select(e => e.Text).ToList();
             }
             catch (WebDriverTimeoutException)
             {
+                Log.Warn("No global search result titles were found before timeout");
                 return new List<string>();
             }
         }
 
-
         public MainPage ClickCodeOfEthicalConductPdfLink()
         {
+            Log.Info("Clicking Code of Ethical Conduct PDF link");
             CustomDriver.WaitUntil(d => d.FindElement(_policyPdfLinkLocator));
             CustomDriver.ScrollIntoViewCenter(_policyPdfLinkLocator);
             CustomDriver.ClickWhenReady(_policyPdfLinkLocator);
@@ -73,6 +82,7 @@ namespace TestProject.PageObjects
 
         public InsightsPage GoToInsights()
         {
+            Log.Info("Opening Insights page");
             CustomDriver.ClickWhenReady(_insightsMenuLocator);
             return new InsightsPage(CustomDriver);
         }

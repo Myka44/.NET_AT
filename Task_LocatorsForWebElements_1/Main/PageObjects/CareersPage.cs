@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium;
+using OpenQA.Selenium;
 
 namespace TestProject.PageObjects
 {
@@ -10,6 +10,7 @@ namespace TestProject.PageObjects
 
         public JobPage StartYourSearch()
         {
+            Log.Info("Starting careers job search");
             CustomDriver.ClickWhenReady(_startYourSearchLocator);
             CustomDriver.AcceptCookiesIfPresent();
             return new JobPage(CustomDriver);
