@@ -40,9 +40,9 @@ namespace TestProject.PageObjects
             WaitUntilHidden(_cookieBanner);
         }
 
-        public void WriteSafe(By locator, string text)
+        public void WriteSafe(By locator, string text) //refactor name
         {
-            WaitAction(locator, _ignoreStaleWait, x => x.SendKeys(text));
+            WaitAction(locator, _ignoreStaleWait, x => x.SendKeys(text)); // add clear()
         }
 
         public void ClickSafe(By locator)

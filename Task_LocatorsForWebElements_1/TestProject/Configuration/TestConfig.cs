@@ -10,7 +10,7 @@ namespace TestProject.Configuration
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.chrome.json")
+                .AddJsonFile("appsettings.firefox.json")
                 .Build();
 
             return configuration.Get<TestSettings>() ?? new TestSettings();

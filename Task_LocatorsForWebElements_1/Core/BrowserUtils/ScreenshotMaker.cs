@@ -15,7 +15,7 @@ namespace TestFramework.Core.BrowserUtils
 
         public string TakeBrowserScreenshot()
         {
-            Directory.CreateDirectory(_screenshotDirectory);
+            Directory.CreateDirectory(_screenshotDirectory);// try catch
 
             var now = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-fff");
             var screenshotPath = Path.Combine(_screenshotDirectory, $"Display_{now}.png");

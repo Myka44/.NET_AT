@@ -99,6 +99,7 @@ namespace TestProject
                 Log.Info($"article page title: {articlePageTitle}");
 
                 Assert.Equal(carouselArticleTitle, articlePageTitle, ignoreCase: true);
+                
             });
         }
 

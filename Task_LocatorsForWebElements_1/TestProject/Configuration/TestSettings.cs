@@ -13,7 +13,7 @@ namespace TestProject.Configuration
 
     public class EnvironmentSettings
     {
-        public string BaseUrl { get; set; } = "https://www.epam.com/";
+        public string BaseUrl { get; set; }
     }
 
     public class LoggingSettings
