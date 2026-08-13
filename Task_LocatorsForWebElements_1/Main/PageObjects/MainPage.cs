@@ -1,3 +1,4 @@
+using BusinessLayer.PageObjects;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
@@ -7,13 +8,19 @@ namespace TestProject.PageObjects
     {
         private readonly string _url;
 
+        /*
+         * <a class="fat-links" href="https://www.epam.com/content/dam/epam/company/about/ethics---compliance/code-of-conduct/Code_of_Ethical_Conduct.pdf">Code of Ethical Conduct (PDF)</a>
+         */
+
         private readonly By _careersLocator = By.PartialLinkText("Careers");
         private readonly By _searchIconLocator = By.ClassName("search-icon");
         private readonly By _searchBarLocator = By.Id("new_form_search");
         private readonly By _findButtonLocator = By.CssSelector(".custom-search-button");
         private readonly By _searchResultItemLocator = By.ClassName("search-results__title-link");
         private readonly By _insightsMenuLocator = By.PartialLinkText("Insights");
-        private readonly By _policyPdfLinkLocator = By.CssSelector("[href*='code-of-conduct/Code-Of-Conduct_01_26.pdf']");
+        private readonly By _policyPdfLinkLocator = By.CssSelector("[href*='Code_of_Ethical_Conduct']");
+        private readonly By _servicesNavBarButtonLocator = By.LinkText("Services");
+        private readonly By _navigationFlyOutLocator = By.ClassName("top-navigation__flyout");
 
         public MainPage(CustomWebDriver driver, string url) : base(driver)
         {
@@ -85,6 +92,23 @@ namespace TestProject.PageObjects
             Log.Info("Opening Insights page");
             CustomDriver.ClickWhenReady(_insightsMenuLocator);
             return new InsightsPage(CustomDriver);
+        }
+
+        public MainPage HoverServicesNavBarButton()
+        {
+            CustomDriver.HoverOver(_servicesNavBarButtonLocator);
+            CustomDriver.WaitUntilVisible(_navigationFlyOutLocator);
+
+            return this;
+        }
+
+        public ServicePage ClickServiceCategory(string serviceCategoryName)
+        {
+            By serviceCategoryButton = By.LinkText(serviceCategoryName);
+
+            CustomDriver.ClickAndWaitUntilUrlChanges(serviceCategoryButton);
+
+            return new ServicePage(CustomDriver);
         }
     }
 }
