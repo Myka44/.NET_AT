@@ -11,5 +11,15 @@ namespace TestProject.PageObjects
         {
             CustomDriver = driver;
         }
+
+        public bool PageTitleContains(string stringToContain)
+        {
+            return CustomDriver.GetPageTitle().Contains(stringToContain);
+        }
+
+        public bool PageTitleEquals(string stringToEqual)
+        {
+            return CustomDriver.GetPageTitle().Equals(stringToEqual);
+        }
     }
 }

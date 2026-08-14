@@ -173,6 +173,11 @@ namespace TestProject.PageObjects
             element.SendKeys(text);
         }
 
+        public string GetPageTitle()
+        {
+            return Driver.Title;
+        }
+
         public string GetText(By locator) => WaitUntilVisible(locator).Text;
 
         public void ScrollIntoView(IWebElement element) =>
@@ -210,5 +215,15 @@ namespace TestProject.PageObjects
         public Screenshot TakeScreenshot() => ((ITakesScreenshot)Driver).GetScreenshot();
 
         public void Quit() => Driver.Quit();
+
+        public void HoverOver(By locator)
+        {
+            IWebElement element = WaitUntilVisible(locator);
+            ScrollIntoView(element);
+
+            new Actions(Driver)
+                .MoveToElement(element)
+                .Perform();
+        }
     }
 }
