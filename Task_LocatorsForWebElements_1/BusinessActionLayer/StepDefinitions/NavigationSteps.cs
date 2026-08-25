@@ -2,7 +2,7 @@ using Reqnroll;
 using TestLayer.SessionContext;
 using TestProject.PageObjects;
 
-namespace TestLayer.StepDefinitions
+namespace BusinessActionLayer.StepDefinitions
 {
     [Binding]
     public sealed class NavigationSteps

@@ -1,7 +1,8 @@
 using Reqnroll;
 using TestLayer.SessionContext;
+using Xunit;
 
-namespace TestLayer.StepDefinitions
+namespace BusinessActionLayer.StepDefinitions
 {
     [Binding]
     public sealed class GlobalSearchSteps
