@@ -12,7 +12,7 @@ namespace TestLayer.ApiTests
 {
     [TestFixture]
     [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
-    [Parallelizable(ParallelScope.All)]
+    [Parallelizable(ParallelScope.All)] // look into
     [Category("API")]
     public sealed class UsersApiTests
     {
@@ -41,7 +41,9 @@ namespace TestLayer.ApiTests
 
             NUnitAssert.That(users, Is.Not.Empty, "The response must contain users.");
 
-            foreach (User user in users)
+            //use Assert.That
+            //Assert.That() Is.EquivalentTo(
+            foreach (User user in users) 
             {
                 NUnitAssert.Multiple(() =>
                 {
@@ -59,6 +61,7 @@ namespace TestLayer.ApiTests
             Log.Info($"Validated required information for {users.Count} users.");
         }
 
+        //add parameter for expected result
         [Test]
         public async Task GetUsers_ReturnsExpectedContentTypeHeader()
         {
@@ -117,7 +120,7 @@ namespace TestLayer.ApiTests
 
             Log.Info("Validated all 10 users and their unique IDs.");
         }
-
+        //Follow AAA
         [Test]
         public async Task PostUser_CreatesUserAndReturnsId()
         {
@@ -149,7 +152,7 @@ namespace TestLayer.ApiTests
                     "The created user response must contain an ID.");
             });
 
-            Log.Info($"Validated created user ID {createdUser.Id}.");
+            //Log.Info($"Validated created user ID {createdUser.Id}.");
         }
 
         [Test]
@@ -165,8 +168,8 @@ namespace TestLayer.ApiTests
             AssertCompletedWithoutClientErrors(response);
             NUnitAssert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound),
                 "The missing resource must return 404 Not Found.");
-
-            Log.Info("Validated 404 Not Found response without client execution errors.");
+            //No methods after assertions
+            //Log.Info("Validated 404 Not Found response without client execution errors.");
         }
 
         private static RestRequest CreateRequest(string resource, Method method)
