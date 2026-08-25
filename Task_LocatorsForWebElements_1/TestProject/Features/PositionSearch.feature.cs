@@ -11,7 +11,7 @@
 #region Designer generated code
 #pragma warning disable
 using Reqnroll;
-namespace TestLayer.Features
+namespace TestsUI.Features
 {
     
     

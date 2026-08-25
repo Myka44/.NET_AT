@@ -1,8 +1,9 @@
 using Reqnroll;
 using TestLayer.SessionContext;
 using TestProject.PageObjects;
+using Xunit;
 
-namespace TestLayer.StepDefinitions
+namespace BusinessActionLayer.StepDefinitions
 {
     [Binding]
     public sealed class InsightsCarouselSteps

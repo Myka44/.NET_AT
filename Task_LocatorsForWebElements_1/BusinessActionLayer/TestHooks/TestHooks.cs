@@ -1,5 +1,6 @@
 ﻿using CoreLayer.WebDriver;
 using log4net;
+using BusinessActionLayer.Configuration;
 using log4net.Config;
 using log4net.Repository.Hierarchy;
 using CoreLayer.WebDriver.Factories;
@@ -15,7 +16,7 @@ using TestLayer.Utils;
 using TestProject.Configuration;
 using TestProject.PageObjects;
 
-namespace TestLayer.Hooks
+namespace BusinessActionLayer.Hooks
 {
 
     [Binding]
@@ -35,7 +36,7 @@ namespace TestLayer.Hooks
         [BeforeTestRun]
         public static void BeforeTestRun()
         {
-            LoggingUtils.Configure(TestConfig.Settings.Logging.MinLevel);
+            LoggingUtils.Configure(UiTestConfig.Settings.Logging.MinLevel);
         }
 
         [BeforeScenario]

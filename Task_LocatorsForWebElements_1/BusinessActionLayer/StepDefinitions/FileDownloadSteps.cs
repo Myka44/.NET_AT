@@ -1,8 +1,9 @@
 using Reqnroll;
 using TestLayer.SessionContext;
 using TestLayer.Utils;
+using Xunit;
 
-namespace TestLayer.StepDefinitions
+namespace BusinessActionLayer.StepDefinitions
 {
     [Binding]
     public sealed class FileDownloadSteps
