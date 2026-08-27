@@ -32,6 +32,7 @@ namespace TestProject.PageObjects
             Log.Info($"Opening main page: {_url}");
             CustomDriver.NavigateTo(_url);
             CustomDriver.AcceptCookiesIfPresent();
+            Log.Info($"Loaded page. URL: {CustomDriver.CurrentUrl}; title: {CustomDriver.GetPageTitle()}");
             return this;
         }
 
