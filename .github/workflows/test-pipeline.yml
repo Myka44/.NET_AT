@@ -1,0 +1,74 @@
+name: API and UI tests
+
+on:
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "0 3 * * 1"
+      timezone: Europe/Vilnius
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: Browser used for UI tests
+        required: true
+        default: chrome
+        type: choice
+        options:
+          - chrome
+          - edge
+          - firefox
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test suite (${{ github.event_name == 'workflow_dispatch' && inputs.browser || 'chrome' }})
+    runs-on: windows-latest
+    timeout-minutes: 60
+    env:
+      SOLUTION_PATH: Task_LocatorsForWebElements_1/Task_LocatorsForWebElements_1.sln
+      API_PROJECT_PATH: Task_LocatorsForWebElements_1/ApiTests/TestsAPI.csproj
+      UI_PROJECT_PATH: Task_LocatorsForWebElements_1/TestProject/TestsUI.csproj
+      UI_BROWSER: ${{ github.event_name == 'workflow_dispatch' && inputs.browser || 'chrome' }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore "$env:SOLUTION_PATH"
+
+      - name: Run API tests
+        run: >-
+          dotnet test "$env:API_PROJECT_PATH"
+          --configuration Release
+          --no-restore
+          --logger "trx;LogFileName=api-tests.trx"
+          --results-directory "$env:GITHUB_WORKSPACE/artifacts/test-results/api"
+
+      - name: Run UI tests with ${{ env.UI_BROWSER }}
+        if: ${{ !cancelled() }}
+        run: >-
+          dotnet test "$env:UI_PROJECT_PATH"
+          --configuration Release
+          --no-restore
+          --logger "trx;LogFileName=ui-tests-${{ env.UI_BROWSER }}.trx"
+          --results-directory "$env:GITHUB_WORKSPACE/artifacts/test-results/ui"
+
+      - name: Upload test artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-${{ env.UI_BROWSER }}-${{ github.run_number }}
+          if-no-files-found: warn
+          path: |
+            artifacts/test-results/**
+            **/Logs/**
+            **/Screenshots/**
