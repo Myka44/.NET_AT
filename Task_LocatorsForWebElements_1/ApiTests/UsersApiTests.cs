@@ -12,7 +12,7 @@ namespace TestLayer.ApiTests
 {
     [TestFixture]
     [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
-    [Parallelizable(ParallelScope.All)] // look into
+    [Parallelizable(ParallelScope.All)]
     [Category("API")]
     public sealed class UsersApiTests
     {
@@ -32,12 +32,25 @@ namespace TestLayer.ApiTests
             Log.Info("Validating that the users list contains all required user information.");
 
             using var client = new ApiClient(Settings.BaseUrl);
-            RestRequest request = CreateRequest(Settings.UsersEndpoint, Method.Get);
+            RestRequest request = new ApiRequestBuilder()
+                .WithResource(Settings.UsersEndpoint)
+                .WithMethod(Method.Get)
+                .Build();
 
             RestResponse<List<User>> response = await client.ExecuteAsync<List<User>>(request);
 
-            AssertSuccessfulResponse(response, HttpStatusCode.OK);
-            List<User> users = RequireData(response);
+            NUnitAssert.Multiple(() =>
+            {
+                NUnitAssert.That(response.ResponseStatus, Is.EqualTo(ResponseStatus.Completed),
+                    () => $"HTTP exchange failed: {response.ErrorMessage ?? response.ErrorException?.Message}");
+                NUnitAssert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+                NUnitAssert.That(response.IsSuccessful, Is.True,
+                    "The response must be successful.");
+                NUnitAssert.That(response.Data, Is.Not.Null,
+                    "The response body must deserialize successfully.");
+            });
+
+            List<User> users = response.Data!;
 
             NUnitAssert.That(users, Is.Not.Empty, "The response must contain users.");
 
@@ -52,19 +65,29 @@ namespace TestLayer.ApiTests
                 user.Company is not null));
         }
 
-        //add parameter for expected result
         [TestCase("application/json; charset=utf-8")]
         public async Task GetUsers_ReturnsExpectedContentTypeHeader(string contentType)
         {
             Log.Info("Validating the users response Content-Type header.");
 
             using var client = new ApiClient(Settings.BaseUrl);
-            RestRequest request = CreateRequest(Settings.UsersEndpoint, Method.Get);
+            RestRequest request = new ApiRequestBuilder()
+                .WithResource(Settings.UsersEndpoint)
+                .WithMethod(Method.Get)
+                .Build();
 
 
             RestResponse response = await client.ExecuteAsync(request);
 
-            AssertSuccessfulResponse(response, HttpStatusCode.OK);
+            NUnitAssert.Multiple(() =>
+            {
+                NUnitAssert.That(response.ResponseStatus, Is.EqualTo(ResponseStatus.Completed),
+                    () => $"HTTP exchange failed: {response.ErrorMessage ?? response.ErrorException?.Message}");
+                NUnitAssert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+                NUnitAssert.That(response.IsSuccessful, Is.True,
+                    "The response must be successful.");
+            });
+
             string? contentTypeHeader = response.ContentHeaders?
                 .FirstOrDefault(header => string.Equals(
                     header.Name,
@@ -84,12 +107,25 @@ namespace TestLayer.ApiTests
             Log.Info("Validating the users count, unique IDs, names, usernames, and companies.");
 
             using var client = new ApiClient(Settings.BaseUrl);
-            RestRequest request = CreateRequest(Settings.UsersEndpoint, Method.Get);
+            RestRequest request = new ApiRequestBuilder()
+                .WithResource(Settings.UsersEndpoint)
+                .WithMethod(Method.Get)
+                .Build();
 
             RestResponse<List<User>> response = await client.ExecuteAsync<List<User>>(request);
 
-            AssertSuccessfulResponse(response, HttpStatusCode.OK);
-            List<User> users = RequireData(response);
+            NUnitAssert.Multiple(() =>
+            {
+                NUnitAssert.That(response.ResponseStatus, Is.EqualTo(ResponseStatus.Completed),
+                    () => $"HTTP exchange failed: {response.ErrorMessage ?? response.ErrorException?.Message}");
+                NUnitAssert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+                NUnitAssert.That(response.IsSuccessful, Is.True,
+                    "The response must be successful.");
+                NUnitAssert.That(response.Data, Is.Not.Null,
+                    "The response body must deserialize successfully.");
+            });
+
+            List<User> users = response.Data!;
 
             NUnitAssert.Multiple(() =>
             {
@@ -107,7 +143,7 @@ namespace TestLayer.ApiTests
                     "Every user must have a company with a name.");
             });
         }
-        //Follow AAA
+
         [Test]
         public async Task PostUser_CreatesUserAndReturnsId()
         {
@@ -128,8 +164,18 @@ namespace TestLayer.ApiTests
 
             RestResponse<User> response = await client.ExecuteAsync<User>(request);
 
-            AssertSuccessfulResponse(response, HttpStatusCode.Created);
-            User createdUser = RequireData(response);
+            NUnitAssert.Multiple(() =>
+            {
+                NUnitAssert.That(response.ResponseStatus, Is.EqualTo(ResponseStatus.Completed),
+                    () => $"HTTP exchange failed: {response.ErrorMessage ?? response.ErrorException?.Message}");
+                NUnitAssert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
+                NUnitAssert.That(response.IsSuccessful, Is.True,
+                    "The response must be successful.");
+                NUnitAssert.That(response.Data, Is.Not.Null,
+                    "The response body must deserialize successfully.");
+            });
+
+            User createdUser = response.Data!;
 
             NUnitAssert.Multiple(() =>
             {
@@ -146,47 +192,21 @@ namespace TestLayer.ApiTests
             Log.Info("Validating that a missing resource returns 404 Not Found.");
 
             using var client = new ApiClient(Settings.BaseUrl);
-            RestRequest request = CreateRequest(Settings.InvalidEndpoint, Method.Get);
+            RestRequest request = new ApiRequestBuilder()
+                .WithResource(Settings.InvalidEndpoint)
+                .WithMethod(Method.Get)
+                .Build();
 
             RestResponse response = await client.ExecuteAsync(request);
 
-            AssertCompletedWithoutClientErrors(response);
-            NUnitAssert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound),
-                "The missing resource must return 404 Not Found.");
-        }
-
-        private static RestRequest CreateRequest(string resource, Method method)
-        {
-            return new ApiRequestBuilder()
-                .WithResource(resource)
-                .WithMethod(method)
-                .Build();
-        }
-
-        private static void AssertSuccessfulResponse(RestResponse response, HttpStatusCode expectedStatusCode)
-        {
-            AssertCompletedWithoutClientErrors(response);
             NUnitAssert.Multiple(() =>
             {
-                NUnitAssert.That(response.StatusCode, Is.EqualTo(expectedStatusCode));
-                NUnitAssert.That(response.IsSuccessful, Is.True,
-                    "The response must be successful.");
+                NUnitAssert.That(response.ResponseStatus, Is.EqualTo(ResponseStatus.Completed),
+                    () => $"HTTP exchange failed: {response.ErrorMessage ?? response.ErrorException?.Message}");
+                NUnitAssert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound),
+                    "The missing resource must return 404 Not Found.");
             });
         }
 
-        private static void AssertCompletedWithoutClientErrors(RestResponse response)
-        {
-            NUnitAssert.That(
-                response.ResponseStatus,
-                Is.EqualTo(ResponseStatus.Completed),
-                () => $"HTTP exchange failed: " + $"{response.ErrorMessage ?? response.ErrorException?.Message}");
-        }
-        private static T RequireData<T>(RestResponse<T> response)
-        {
-            NUnitAssert.That(response.Data, Is.Not.Null,
-                "The response body must deserialize successfully.");
-
-            return response.Data!;
-        }
     }
 }
