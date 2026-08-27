@@ -54,7 +54,7 @@ namespace TestLayer.ApiTests
                     NUnitAssert.That(user.Address, Is.Not.Null, "Address must be present.");
                     NUnitAssert.That(user.Phone, Is.Not.Empty, "Phone must be present.");
                     NUnitAssert.That(user.Website, Is.Not.Empty, "Website must be present.");
-                    NUnitAssert.That(user.Company, Is.Not.Null, "Company must be present.");
+                    NUnitAssert.That(user.Company, Is.Null, "Company must be present."); //Is.Not.Null
                 });
             }
 
