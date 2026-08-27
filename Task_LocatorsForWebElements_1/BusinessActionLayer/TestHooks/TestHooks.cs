@@ -4,7 +4,6 @@ using BusinessActionLayer.Configuration;
 using log4net.Config;
 using log4net.Repository.Hierarchy;
 using CoreLayer.WebDriver.Factories;
-using OpenQA.Selenium;
 using Reqnroll;
 using System;
 using System.Collections.Generic;
@@ -53,11 +52,7 @@ namespace BusinessActionLayer.Hooks
 
             var driver = browserFactory.CreateDriver();
 
-            if (IsCiRun())
-            {
-                driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080);
-            }
-            else if (_testSessionContext.Settings.Browser.Maximize)
+            if (_testSessionContext.Settings.Browser.Maximize)
             {
                 driver.Manage().Window.Maximize();
             }
@@ -66,15 +61,6 @@ namespace BusinessActionLayer.Hooks
 
             _testSessionContext.ScreenshotMaker = new ScreenshotMaker(_testSessionContext.Driver, _testSessionContext.Settings.Screenshots.Directory);
         }
-
-        private static bool IsCiRun()
-        {
-            return string.Equals(
-                Environment.GetEnvironmentVariable("CI"),
-                "true",
-                StringComparison.OrdinalIgnoreCase);
-        }
-
 
         [AfterScenario(Order = 0)]
         public void TakeScreenshotOnFailure()

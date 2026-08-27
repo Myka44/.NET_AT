@@ -41,29 +41,20 @@ namespace TestLayer.ApiTests
 
             NUnitAssert.That(users, Is.Not.Empty, "The response must contain users.");
 
-            //use Assert.That
-            //Assert.That() Is.EquivalentTo(
-            foreach (User user in users) 
-            {
-                NUnitAssert.Multiple(() =>
-                {
-                    NUnitAssert.That(user.Id, Is.GreaterThan(0), "User ID must be present.");
-                    NUnitAssert.That(user.Name, Is.Not.Empty, "User name must be present.");
-                    NUnitAssert.That(user.Username, Is.Not.Empty, "Username must be present.");
-                    NUnitAssert.That(user.Email, Is.Not.Empty, "Email must be present.");
-                    NUnitAssert.That(user.Address, Is.Not.Null, "Address must be present.");
-                    NUnitAssert.That(user.Phone, Is.Not.Empty, "Phone must be present.");
-                    NUnitAssert.That(user.Website, Is.Not.Empty, "Website must be present.");
-                    NUnitAssert.That(user.Company, Is.Null, "Company must be present."); //Is.Not.Null
-                });
-            }
-
-            Log.Info($"Validated required information for {users.Count} users.");
+            NUnitAssert.That(users, Has.All.Matches<User>(user =>
+                user.Id > 0 &&
+                !string.IsNullOrWhiteSpace(user.Name) &&
+                !string.IsNullOrWhiteSpace(user.Username) &&
+                !string.IsNullOrWhiteSpace(user.Email) &&
+                user.Address is not null &&
+                !string.IsNullOrWhiteSpace(user.Phone) &&
+                !string.IsNullOrWhiteSpace(user.Website) &&
+                user.Company is not null));
         }
 
         //add parameter for expected result
-        [Test]
-        public async Task GetUsers_ReturnsExpectedContentTypeHeader()
+        [TestCase("application/json; charset=utf-8")]
+        public async Task GetUsers_ReturnsExpectedContentTypeHeader(string contentType)
         {
             Log.Info("Validating the users response Content-Type header.");
 
@@ -83,10 +74,8 @@ namespace TestLayer.ApiTests
 
             NUnitAssert.That(contentTypeHeader, Is.Not.Null.And.Not.Empty,
                 "The Content-Type header must exist.");
-            NUnitAssert.That(contentTypeHeader, Is.EqualTo("application/json; charset=utf-8"),
+            NUnitAssert.That(contentTypeHeader, Is.EqualTo(contentType),
                 "The Content-Type header has an unexpected value.");
-
-            Log.Info($"Validated Content-Type header '{contentTypeHeader}'.");
         }
 
         [Test]
@@ -117,8 +106,6 @@ namespace TestLayer.ApiTests
                                       !string.IsNullOrWhiteSpace(user.Company.Name)), Is.True,
                     "Every user must have a company with a name.");
             });
-
-            Log.Info("Validated all 10 users and their unique IDs.");
         }
         //Follow AAA
         [Test]
@@ -151,8 +138,6 @@ namespace TestLayer.ApiTests
                 NUnitAssert.That(createdUser.Id, Is.GreaterThan(0),
                     "The created user response must contain an ID.");
             });
-
-            //Log.Info($"Validated created user ID {createdUser.Id}.");
         }
 
         [Test]
@@ -168,8 +153,6 @@ namespace TestLayer.ApiTests
             AssertCompletedWithoutClientErrors(response);
             NUnitAssert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound),
                 "The missing resource must return 404 Not Found.");
-            //No methods after assertions
-            //Log.Info("Validated 404 Not Found response without client execution errors.");
         }
 
         private static RestRequest CreateRequest(string resource, Method method)
