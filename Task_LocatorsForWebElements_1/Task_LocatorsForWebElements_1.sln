@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36804.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsUI", "TestProject\TestsUI.csproj", "{166A2D4D-F633-49A6-933F-079F9DE1C704}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsUI", "UiTests\TestsUI.csproj", "{166A2D4D-F633-49A6-933F-079F9DE1C704}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLayer", "Main\BusinessLayer.csproj", "{F6D00B04-114A-42BD-91BD-617E95B6BD7F}"
 EndProject
