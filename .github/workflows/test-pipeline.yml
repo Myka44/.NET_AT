@@ -69,17 +69,18 @@ jobs:
         if: ${{ always() }}
         shell: pwsh
         run: |
-            Get-ChildItem -Path "$env:GITHUB_WORKSPACE" -Recurse -File |
-            Where-Object { $_.Extension -in @(".trx", ".log", ".png") } |
-            Select-Object FullName, Length
+          Get-ChildItem -Path "$env:GITHUB_WORKSPACE" -Recurse -File |
+          Where-Object { $_.Extension -in @(".trx", ".log", ".png") } |
+          Select-Object FullName, Length
 
       - name: Upload test artifacts
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: test-artifacts-${{ env.UI_BROWSER }}-${{ github.run_number }}
-          if-no-files-found: warn
+          if-no-files-found: error
           path: |
-            artifacts/test-results/**
-            **/Logs/**
-            **/Screenshots/**
+            artifacts/test-results
+            Task_LocatorsForWebElements_1/ApiTests/bin/Release/net9.0/Logs
+            Task_LocatorsForWebElements_1/TestProject/bin/Release/net9.0/Logs
+            Task_LocatorsForWebElements_1/TestProject/bin/Release/net9.0/Screenshots
