@@ -1,6 +1,9 @@
 name: API and UI tests
 
 on:
+  push:
+    branches: 
+      - task7    
   pull_request:
     branches:
       - main
