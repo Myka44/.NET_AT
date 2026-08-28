@@ -59,4 +59,8 @@
 /Task_LocatorsForWebElements_1/Task_LocatorsForWebElements_1.zip
 **/obj/
 **/bin/
+**/artifacts/
+**/Logs/
+**/Screenshots/
+**/Downloads/
 /Task_LocatorsForWebElements_1/Core/Reader/JsonReader.cs

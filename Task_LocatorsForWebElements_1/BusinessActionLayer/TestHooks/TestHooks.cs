@@ -62,7 +62,6 @@ namespace BusinessActionLayer.Hooks
             _testSessionContext.ScreenshotMaker = new ScreenshotMaker(_testSessionContext.Driver, _testSessionContext.Settings.Screenshots.Directory);
         }
 
-
         [AfterScenario(Order = 0)]
         public void TakeScreenshotOnFailure()
         {
